@@ -1,11 +1,13 @@
 import re
 import os
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_file
 from googleapiclient.discovery import build
 from pytube import YouTube
 from dotenv import load_dotenv
 from google.auth.exceptions import DefaultCredentialsError
 from pathlib import Path
+import io
+from zipfile import ZipFile
 
 
 
@@ -125,8 +127,22 @@ def index():
 @app.route('/download', methods=['POST'])
 def download():
     playlist_id = request.form['playlist_id']
-    download_videos(playlist_id)
-    return redirect(url_for('index'))
+    dir = make_folder(playlist_id)
+    urls = get_video_urls(playlist_id)
+    zip_buffer = io.BytesIO()
+    with ZipFile(zip_buffer, 'a') as zip_file:
+        for each in urls:
+            yt = YouTube(each)
+            stream = yt.streams.get_highest_resolution()
+            stream.download(output_path=dir)
+            zip_file.write(dir + '/' + yt.title + '.' + stream.subtype, arcname=yt.title + '.' + stream.subtype)
+    zip_buffer.seek(0)
+    return send_file(
+        zip_buffer,
+        mimetype='application/zip',
+        as_attachment=True,
+        attachment_filename='videos.zip'
+    )
 
 @app.route('/terms')
 def terms():
