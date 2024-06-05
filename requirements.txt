@@ -1,1 +1,4 @@
 Flask
+pytube
+google-api-python-client
+python-dotenv
