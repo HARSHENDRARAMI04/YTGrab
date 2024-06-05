@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YTGrab</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="logocontainer">
+        <a href="{{ url_for('index') }}" class="logohome">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='favicon.png') }}" alt="" class="logoimg"><h1>YTGrab</h1>
+        
+            </div>
+    
+        </a>
+
+    </div>
+    
+
+    
+    <form method="post" class="first_form">
+        <h1>YouTube Playlist Downloader</h1>
+        <label for="url">Playlist URL:</label>
+        <input  class="first" type="text" id="url" name="url" required>
+        <button  type="submit">Submit</button>
+    </form>
+
+    
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <div class="instructions">
+        <center>
+            <!-- <hr style="width: 60%;text-align: center;color: grey;"> -->
+            <h2>Instructions</h2>
+            <p>This tool is for YouTube playlists which are public or unlisted.</p>
+            <p>If there is an error message displayed, please check your URL and provide the correct URL.</p>
+        </center>
+    </div>
+    
+    {% if playlist_name %}
+    <div class="videos">
+        <h2>Playlist Name: {{ playlist_name }}</h2>
+        <h3>Videos:</h3>
+        <ul>
+        {% for item in playlist_items %}
+            <li>
+                <img src="{{ item.snippet.thumbnails.default.url }}" alt="{{ item.snippet.title }}">
+                <span>{{ item.snippet.title }}</span>
+            </li>
+        {% endfor %}
+        </ul>
+        <center>
+            <form method="post" action="{{ url_for('download') }}">
+                <input type="hidden" name="playlist_id" value="{{ playlist_id }}">
+                <button class="download" type="submit">Download Videos</button>
+            </form>
+        </center>
+    </div>
+    
+    {% endif %}
+    <footer>
+        <div class="lastcontainer">
+            <!-- <hr style="width: 62%;text-align: center;color: grey;"> -->
+            <center><h5 class="end">@2024 YTGrab All Rights Reserved</h5></center>
+            <center><p><a href="{{ url_for('index') }}">Home</a>  .  <a href="{{ url_for('about') }}">About</a>  .  <a href="{{ url_for('contact') }}">Contact</a>  .  <a href="{{ url_for('terms') }}">Terms of Service</a></p></center>
+        </div>
+    </footer>
+</body>
+</html>

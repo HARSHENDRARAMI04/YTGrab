@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - YTGrab</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        h1, h2 {
+            text-align: left;
+        }
+        p {
+            text-align: justify;
+        }
+        footer {
+            
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+        .lastcontainer {
+            margin-top: auto;
+            padding: 20px;
+            
+            color: white;
+        }
+        .lastcontainer p{
+            text-align: center;
+        }
+        .lastcontainer h5.end {
+            margin: 0;
+            color: #6b6b6b;
+        }
+
+
+
+        .lastcontainer a {
+            color: #6b6b6b;
+            text-decoration: none;
+        }
+
+        .lastcontainer a:hover {
+            text-decoration: underline;
+        }
+        .logo{
+            width: 20%;
+            height: 100px;
+            display: flex;
+            /* align-items: center; */
+            text-decoration: none;
+        }
+        .logoimg{
+            width: 75px;
+            height: 75px;
+        }
+        h1 {
+            
+            color: #333;
+        }
+        .logohome{
+            text-decoration: none;
+            width: 15%;
+            text-decoration-color: #333;
+            color: #333;
+            text-transform: none;
+        }
+        .logohead{
+            color: #333;
+            text-decoration: none;
+            margin-top: 13.5px;
+        }
+        .logocontainer{
+            width: 10%;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="logocontainer">
+        <a href="{{ url_for('index') }}" class="logohome">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='favicon.png') }}" alt="" class="logoimg"><h1 class="logohead">YTGrab</h1>
+        
+            </div>
+    
+        </a>
+
+    </div>
+    <div class="wrapper">
+        <div class="container">
+            <h1>About Us</h1>
+            <p>Welcome to YTGrab, your premier destination for downloading videos from your YouTube playlists. Whether your playlists are public or unlisted, our service ensures a fast, reliable, and ad-free experience.</p>
+
+            <h2>Our Mission</h2>
+            <p>Our mission is to make it easy for you to download and enjoy your favorite videos from YouTube playlists with unparalleled speed and reliability, all without the annoyance of ads. We strive to provide a seamless and efficient service to all our users.</p>
+
+            
+            <h2>Our Features</h2>
+            <ul>
+                <li>Fast and easy downloading of videos from public or unlisted YouTube playlists.</li>
+                <li>User-friendly interface.</li>
+                <li>No ads, ensuring a smooth user experience.</li>
+                <li>High-speed downloads.</li>
+                <li>Secure and reliable service.</li>
+                <li>Regular updates and new features.</li>
+            </ul>
+
+            <h2>Contact Us</h2>
+            <p>If you have any questions, feedback, or need assistance, please don't hesitate to contact us. We're always here to help and continually improve our service based on your suggestions.</p>
+        </div>
+        <footer>
+            <div class="lastcontainer">
+                <h5 class="end">@2024 YTGrab All Rights Reserved</h5>
+                <p><a href="{{ url_for('index') }}">Home</a>  .  <a href="{{ url_for('about') }}">About</a>  .  <a href="{{ url_for('contact') }}">Contact</a>  .  <a href="{{ url_for('terms') }}">Terms of Service</a></p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

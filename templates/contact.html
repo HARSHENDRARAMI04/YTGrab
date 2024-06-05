@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - YTGrab</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            flex-direction: column;
+            
+        }
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        h1, h2 {
+            text-align: left;
+        }
+        p, form {
+            text-align: justify;
+        }
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #4cae4c;
+        }
+        footer {
+            
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+        .lastcontainer {
+            margin-top: auto;
+            padding: 20px;
+            
+            color: white;
+        }
+        .lastcontainer p{
+            text-align: center;
+        }
+        .lastcontainer h5.end {
+            margin: 0;
+            color: #6b6b6b;
+        }
+
+
+
+        .lastcontainer a {
+            color: #6b6b6b;
+            text-decoration: none;
+        }
+
+        .lastcontainer a:hover {
+            text-decoration: underline;
+        }
+        .logo{
+            width: 100%;
+            height: 100px;
+            display: flex;
+            /* align-items: center; */
+        }
+        .logoimg{
+            width: 75px;
+            height: 75px;
+        }
+        .logotxt{
+            /* margin-top: auto; */
+            color: #333;
+            
+            margin-top: 13.5px;
+        }
+        .logohome{
+            text-decoration: none;
+            width: 15%;
+        }
+        .logocontainer{
+            width: 10%;
+        }
+    </style>
+</head>
+<body>
+    <div class="logocontainer">
+        <a href="{{ url_for('index') }}" class="logohome">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='favicon.png') }}" alt="" class="logoimg"><h1 class="logotxt">YTGrab</h1>
+        
+            </div>
+    
+        </a>
+
+    </div>
+    <div class="wrapper">
+        <div class="container">
+            <h1>Contact Us</h1>
+            <p>We're here to help! If you have any questions, feedback, or need assistance, please don't hesitate to reach out to us. Fill out the form below, and a member of our team will get back to you as soon as possible.</p>
+
+            <form action="mailto:ytgrab2024@gmail.com" method="post">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+        <footer>
+            <div class="lastcontainer">
+                <h5 class="end">@2024 YTGrab All Rights Reserved</h5>
+                <p><a href="{{ url_for('index') }}">Home</a>  .  <a href="{{ url_for('about') }}">About</a>  .  <a href="{{ url_for('contact') }}">Contact</a>  .  <a href="{{ url_for('terms') }}">Terms of Service</a></p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Download Videos</title>
+</head>
+<body>
+    <h1>{{ playlist_name }}</h1>
+    {% for url in video_urls %}
+    <p><a href="{{ url }}">{{ url }}</a></p>
+    {% endfor %}
+    <form action="/download/{{ playlist_id }}" method="post">
+        <button type="submit">Download Videos</button>
+    </form>
+</body>
+</html>
