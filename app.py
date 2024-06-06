@@ -1,11 +1,18 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+import re
+import os
+from flask import Flask, render_template, request, redirect, url_for
 from googleapiclient.discovery import build
 from pytube import YouTube
 from dotenv import load_dotenv
 from google.auth.exceptions import DefaultCredentialsError
 from pathlib import Path
-import re
-import os
+
+
+
+
+
+
+
 
 app = Flask(__name__)
 
@@ -81,26 +88,23 @@ def get_video_urls(playlist_id):
     return video_urls
 
 def download_videos(playlist_id):
-    app_root = os.path.dirname(os.path.abspath(__file__))
-    downloads_path = os.path.join(app_root, "downloads")
-    
+    dir = make_folder(playlist_id)
+    urls = get_video_urls(playlist_id)
+    for each in urls:
+        yt = YouTube(each)
+        stream = yt.streams.get_highest_resolution()
+        stream.download(output_path=dir)
+
+def make_folder(playlist_id):
+    home = str(Path.home())
+    downloads_path = os.path.join(home, "Downloads")
     if not os.path.exists(downloads_path):
         os.makedirs(downloads_path)
-    
-    urls = get_video_urls(playlist_id)
-    
-    for each in urls:
-        try:
-            yt = YouTube(each)
-            stream = yt.streams.get_highest_resolution()
-            if stream:
-                print(f"Downloading: {yt.title}...")
-                stream.download(output_path=downloads_path)
-                print(f"Downloaded: {yt.title}")
-            else:
-                print(f"No suitable stream found for: {yt.title}")
-        except Exception as e:
-            print(f"Error downloading {each}: {str(e)}")
+    name = get_playlist_name(playlist_id)
+    folder_path = os.path.join(downloads_path, name)
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    return folder_path
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -123,7 +127,7 @@ def index():
 def download():
     playlist_id = request.form['playlist_id']
     download_videos(playlist_id)
-    return jsonify({"status": "success"})
+    return redirect(url_for('index'))
 
 @app.route('/terms')
 def terms():
