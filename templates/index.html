@@ -6,51 +6,36 @@
     <title>YTGrab</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-    <script>
-        function startDownload(playlist_id) {
-    document.getElementById('progress').style.display = 'block';
-    fetch('{{ url_for("download") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `playlist_id=${playlist_id}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            document.getElementById('progress').style.display = 'none';
-            alert('Download complete!');
-        } else {
-            document.getElementById('progress').style.display = 'none';
-            alert('Download failed!');
-        }
-    });
-}
-    </script>
 </head>
 <body>
     <div class="logocontainer">
         <a href="{{ url_for('index') }}" class="logohome">
             <div class="logo">
                 <img src="{{ url_for('static', filename='favicon.png') }}" alt="" class="logoimg"><h1>YTGrab</h1>
+        
             </div>
+    
         </a>
-    </div>
 
+    </div>
+    
+
+    
     <form method="post" class="first_form">
         <h1>YouTube Playlist Downloader</h1>
         <label for="url">Playlist URL:</label>
-        <input class="first" type="text" id="url" name="url" required>
-        <button type="submit">Submit</button>
+        <input  class="first" type="text" id="url" name="url" required>
+        <button  type="submit">Submit</button>
     </form>
 
+    
     {% if error %}
         <p style="color: red;">{{ error }}</p>
     {% endif %}
 
     <div class="instructions">
         <center>
+            <!-- <hr style="width: 60%;text-align: center;color: grey;"> -->
             <h2>Instructions</h2>
             <p>This tool is for YouTube playlists which are public or unlisted.</p>
             <p>If there is an error message displayed, please check your URL and provide the correct URL.</p>
@@ -70,23 +55,21 @@
         {% endfor %}
         </ul>
         <center>
-            <form method="post" onsubmit="event.preventDefault(); startDownload('{{ playlist_id }}');">
+            <form method="post" action="{{ url_for('download') }}">
                 <input type="hidden" name="playlist_id" value="{{ playlist_id }}">
                 <button class="download" type="submit">Download Videos</button>
             </form>
-            <div id="progress" style="display: none;">
-                <p>Downloading...</p>
-                <progress></progress>
-            </div>
         </center>
     </div>
+    
     {% endif %}
-
     <footer>
         <div class="lastcontainer">
+            <!-- <hr style="width: 62%;text-align: center;color: grey;"> -->
             <center><h5 class="end">@2024 YTGrab All Rights Reserved</h5></center>
             <center><p><a href="{{ url_for('index') }}">Home</a>  .  <a href="{{ url_for('about') }}">About</a>  .  <a href="{{ url_for('contact') }}">Contact</a>  .  <a href="{{ url_for('terms') }}">Terms of Service</a></p></center>
         </div>
     </footer>
+    
 </body>
 </html>
