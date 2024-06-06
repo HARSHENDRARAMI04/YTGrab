@@ -1,18 +1,12 @@
-import re
-import os
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, send_file, after_this_request
 from googleapiclient.discovery import build
 from pytube import YouTube
+from pytube.exceptions import AgeRestrictedError
 from dotenv import load_dotenv
 from google.auth.exceptions import DefaultCredentialsError
 from pathlib import Path
-
-
-
-
-
-
-
+import os
+import re
 
 app = Flask(__name__)
 
@@ -88,23 +82,25 @@ def get_video_urls(playlist_id):
     return video_urls
 
 def download_videos(playlist_id):
-    dir = make_folder(playlist_id)
     urls = get_video_urls(playlist_id)
+    video_streams = []
     for each in urls:
-        yt = YouTube(each)
-        stream = yt.streams.get_highest_resolution()
-        stream.download(output_path=dir)
+        try:
+            yt = YouTube(each)
+            stream = yt.streams.get_highest_resolution()
+            video_streams.append((yt.title, stream))
+        except AgeRestrictedError:
+            print(f"Cannot download {yt.title} as it is age restricted.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+    return video_streams
 
-def make_folder(playlist_id):
+def get_download_path():
     home = str(Path.home())
-    downloads_path = os.path.join(home, "Downloads")
-    if not os.path.exists(downloads_path):
-        os.makedirs(downloads_path)
-    name = get_playlist_name(playlist_id)
-    folder_path = os.path.join(downloads_path, name)
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-    return folder_path
+    return os.path.join(home, "Downloads")
+
+def sanitize_filename(name):
+    return re.sub(r'[<>:"/\\|?*]', '', name)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -126,8 +122,31 @@ def index():
 @app.route('/download', methods=['POST'])
 def download():
     playlist_id = request.form['playlist_id']
-    download_videos(playlist_id)
-    return redirect(url_for('index'))
+    video_streams = download_videos(playlist_id)
+    
+    download_path = get_download_path()
+    downloaded_files = []
+
+    for title, stream in video_streams:
+        sanitized_title = sanitize_filename(title)
+        video_path = os.path.join(download_path, f"{sanitized_title}.mp4")
+        stream.download(output_path=download_path, filename=f"{sanitized_title}.mp4")
+        downloaded_files.append(video_path)
+    
+    if downloaded_files:
+        @after_this_request
+        def remove_file(response):
+            try:
+                for file_path in downloaded_files:
+                    os.remove(file_path)
+            except Exception as e:
+                print(f"Error removing downloaded file: {e}")
+            return response
+        
+        # Returning the first video for the sake of example, you might want to create a zip of all files and return that.
+        return send_file(downloaded_files[0], as_attachment=True, download_name=os.path.basename(downloaded_files[0]), mimetype="video/mp4")
+    else:
+        return render_template('index.html', error="No videos were downloaded")
 
 @app.route('/terms')
 def terms():
