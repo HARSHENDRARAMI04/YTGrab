@@ -81,8 +81,8 @@ def get_video_urls(playlist_id):
     return video_urls
 
 def download_videos(playlist_id):
-    home = str(Path.home())
-    downloads_path = os.path.join(home, "Downloads")
+    app_root = os.path.dirname(os.path.abspath(__file__))
+    downloads_path = os.path.join(app_root, "downloads")
     
     if not os.path.exists(downloads_path):
         os.makedirs(downloads_path)
@@ -90,9 +90,17 @@ def download_videos(playlist_id):
     urls = get_video_urls(playlist_id)
     
     for each in urls:
-        yt = YouTube(each)
-        stream = yt.streams.get_highest_resolution()
-        stream.download(output_path=downloads_path)
+        try:
+            yt = YouTube(each)
+            stream = yt.streams.get_highest_resolution()
+            if stream:
+                print(f"Downloading: {yt.title}...")
+                stream.download(output_path=downloads_path)
+                print(f"Downloaded: {yt.title}")
+            else:
+                print(f"No suitable stream found for: {yt.title}")
+        except Exception as e:
+            print(f"Error downloading {each}: {str(e)}")
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
