@@ -7,6 +7,8 @@ from google.auth.exceptions import DefaultCredentialsError
 from pathlib import Path
 import os
 import re
+import tempfile
+import zipfile
 
 app = Flask(__name__)
 
@@ -79,6 +81,10 @@ def get_video_urls(playlist_id):
         next_page_token = playlist_items_response.get('nextPageToken')
         if not next_page_token:
             break
+
+    # Debugging: Log extracted video URLs
+    print("Extracted video URLs:", video_urls)
+    
     return video_urls
 
 def download_videos(playlist_id):
@@ -93,6 +99,10 @@ def download_videos(playlist_id):
             print(f"Cannot download {yt.title} as it is age restricted.")
         except Exception as e:
             print(f"An error occurred: {e}")
+
+    # Debugging: Log video streams to be downloaded
+    print("Video streams to be downloaded:", [(title, stream.url) for title, stream in video_streams])
+
     return video_streams
 
 def get_download_path():
@@ -122,6 +132,7 @@ def index():
 @app.route('/download', methods=['POST'])
 def download():
     playlist_id = request.form['playlist_id']
+    playlist_name = get_playlist_name(playlist_id)
     video_streams = download_videos(playlist_id)
     
     download_path = get_download_path()
@@ -130,21 +141,42 @@ def download():
     for title, stream in video_streams:
         sanitized_title = sanitize_filename(title)
         video_path = os.path.join(download_path, f"{sanitized_title}.mp4")
+        
+        # Check if file already exists
+        if os.path.exists(video_path):
+            print(f"File already exists: {video_path}")
+            continue
+        
         stream.download(output_path=download_path, filename=f"{sanitized_title}.mp4")
         downloaded_files.append(video_path)
     
+    # Debugging: Log downloaded files
+    print("Downloaded files:", downloaded_files)
+
     if downloaded_files:
         @after_this_request
         def remove_file(response):
             try:
                 for file_path in downloaded_files:
-                    os.remove(file_path)
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                if os.path.exists(zip_path):
+                    os.remove(zip_path)
             except Exception as e:
                 print(f"Error removing downloaded file: {e}")
             return response
         
-        # Returning the first video for the sake of example, you might want to create a zip of all files and return that.
-        return send_file(downloaded_files[0], as_attachment=True, download_name=os.path.basename(downloaded_files[0]), mimetype="video/mp4")
+        # Create a unique temporary directory
+        tmpdirname = tempfile.mkdtemp()
+        sanitized_playlist_name = sanitize_filename(playlist_name)
+        zip_path = os.path.join(tmpdirname, f"{sanitized_playlist_name}.zip")
+        
+        # Create ZIP file
+        with zipfile.ZipFile(zip_path, 'w') as zipf:
+            for file in downloaded_files:
+                zipf.write(file, os.path.basename(file))
+
+        return send_file(zip_path, as_attachment=True, download_name=f"{sanitized_playlist_name}.zip")
     else:
         return render_template('index.html', error="No videos were downloaded")
 
