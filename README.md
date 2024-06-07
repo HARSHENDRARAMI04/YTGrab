@@ -1,4 +1,4 @@
-# 📥 YTGrab - YouTube Playlist Downloader
+#  YTGrab - YouTube Playlist Downloader
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-2.x-green.svg)
@@ -14,7 +14,6 @@ Welcome to **YTGrab**, the ultimate YouTube Playlist Downloader! Easily download
 - 📊 Real-time download progress bar
 - 🔧 Easy-to-use web interface
 
-## 📸 Screenshot
+## 📸 Website is live at - https://ytgrab.onrender.com
 
-![Screenshot](path/to/screenshot.png)
 
